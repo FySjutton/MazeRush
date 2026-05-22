@@ -1,0 +1,6 @@
+name: MazeRush
+version: '${version}'
+
+main: avox.se.mazeRush.MazeRush
+api-version: '26.1.2'
+load: POSTWORLD
