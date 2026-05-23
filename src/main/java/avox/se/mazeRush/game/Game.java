@@ -9,6 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.jspecify.annotations.NonNull;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -34,17 +35,11 @@ public class Game {
             this.players.put(player, new GamePlayer(player));
         }
 
-        List<Integer> indices = IntStream.range(0, blockList.length * blockList[0].length)
-            .filter(i -> blockList[i / blockList[0].length][i % blockList[0].length].spawnable())
-            .boxed()
-            .toList();
-
+        List<MazeBlock> outerBlocks = getOuterEdgeBlocks(blockList);
         List<CompletableFuture<Boolean>> futures = players.stream()
             .map(player -> {
-                int index = indices.get(new Random().nextInt(indices.size()));
-                int x = index / blockList[0].length;
-                int z = index % blockList[0].length;
-                return player.teleportAsync(new Location(world, x * map.roomSize + (double) map.roomSize / 2, 102, z * map.roomSize + (double) map.roomSize / 2));
+                MazeBlock block = outerBlocks.get(new Random().nextInt(outerBlocks.size()));
+                return player.teleportAsync(new Location(world, block.coordinate.x * map.roomSize + (double) map.roomSize / 2, 102, block.coordinate.y * map.roomSize + (double) map.roomSize / 2));
             })
             .toList();
 
@@ -57,5 +52,23 @@ public class Game {
 
                 Bukkit.getScheduler().runTaskLater(plugin, () -> started = true, 5 * 20L);
             }, 5 * 20L));
+    }
+
+    private static @NonNull List<MazeBlock> getOuterEdgeBlocks(MazeBlock[][] blockList) {
+        int w = blockList.length;
+        int h = blockList[0].length;
+        int depth = 2; // outer rings
+
+        List<MazeBlock> outerBlocks = new ArrayList<>();
+
+        for (int x = 0; x < w; x++) {
+            for (int z = 0; z < h; z++) {
+                boolean inOuter = x < depth || x >= w - depth || z < depth || z >= h - depth;
+                if (!inOuter) continue;
+                MazeBlock b = blockList[x][z];
+                if (b != null && b.mazeBlockType.spawnable()) outerBlocks.add(b);
+            }
+        }
+        return outerBlocks;
     }
 }

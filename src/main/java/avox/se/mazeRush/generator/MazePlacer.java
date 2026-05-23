@@ -3,10 +3,12 @@ package avox.se.mazeRush.generator;
 import avox.se.mazeRush.structure.MazeBlock;
 import avox.se.mazeRush.structure.MazeMap;
 import org.bukkit.Location;
+import org.bukkit.Rotation;
 import org.bukkit.World;
 import org.bukkit.block.structure.Mirror;
 import org.bukkit.block.structure.StructureRotation;
 import org.bukkit.structure.Structure;
+import org.joml.Vector2d;
 
 import java.util.Map;
 import java.util.Random;
@@ -23,24 +25,31 @@ public class MazePlacer {
     public MazeBlock[][] place(World world, boolean[][][] walls) {
         int width = walls.length;
         int height = walls[0].length;
+        int[] center = MazeGenerator.getCenterCell(width, height);
+        int cx = center[0], cz = center[1];
 
         MazeBlock[][] blocks = new MazeBlock[width][height];
         for (int x = 0; x < width; x++) {
             for (int z = 0; z < height; z++) {
+                if (Math.abs(x - cx) <= 1 && Math.abs(z - cz) <= 1) continue;
+
                 boolean n = walls[x][z][0];
                 boolean e = walls[x][z][1];
                 boolean s = walls[x][z][2];
                 boolean w = walls[x][z][3];
 
                 RoomType room = resolveRoom(n, e, s, w);
-                MazeBlock block = mazeMap.getBlock(room.type);
-                blocks[x][z] = block;
+                MazeBlock.MazeBlockType block = mazeMap.getBlock(room.type);
+                blocks[x][z] = new MazeBlock(new Vector2d(x, z), block);
                 Structure structure = block.structure();
 
                 Location loc = getLocation(world, x, z, room.rotation);
                 structure.place(loc, true, room.rotation, Mirror.NONE, 0, 1.0f, new Random());
             }
         }
+
+        int[] coords = MazeGenerator.getCenterCell(width, height);
+        mazeMap.spawn.place(new Location(world, (coords[0] - 1) * mazeMap.roomSize, 100, (coords[1] - 1) * mazeMap.roomSize), true, StructureRotation.NONE, Mirror.NONE, 0, 1.0f, new Random());
         return blocks;
     }
 
@@ -87,7 +96,7 @@ public class MazePlacer {
         int s = mazeMap.roomSize - 1; // 8
 
         return switch (rotation) {
-            case NONE  -> new Location(world, bx, yLevel, bz );
+            case NONE -> new Location(world, bx, yLevel, bz );
             case CLOCKWISE_90 -> new Location(world, bx + s, yLevel, bz );
             case CLOCKWISE_180 -> new Location(world, bx + s, yLevel, bz + s);
             case COUNTERCLOCKWISE_90 -> new Location(world, bx, yLevel, bz + s);

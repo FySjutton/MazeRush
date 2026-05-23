@@ -3,7 +3,7 @@ The data structure of a MazeRush map is quite simple.
 ```
 /MazeRush
     /maps
-        /[name]                 // the name of the map
+        /[name]   // the name of the map
             /4_way
                 variant1.nbt
                 variant2.nbt
@@ -19,7 +19,8 @@ The data structure of a MazeRush map is quite simple.
             /deadend
                 variant1.nbt
                 variant2.nbt
-            data.json           // this file contains the information about the map, see below
+            spawn.nbt
+            data.json // this file contains the information about the map, see below
 ```
 
 ## data.json
@@ -33,11 +34,11 @@ The data structure of a MazeRush map is quite simple.
   
   // a list on all the files, their variants and their chances of spawning
   "files": {
-    "4_way": [    // a list of the different variations
+    "4_way": [ // a list of the different variations
       {
-        "name": "variation1.nbt",   // the name of the variation
-        "chance": 0.7,              // the chance of this variation of spawning
-        "spawnable": true           // if players should be able to spawn in it from the start
+        "name": "variation1.nbt", // the name of the variation
+        "chance": 0.7, // the chance of this variation of spawning
+        "spawnable": true // if players should be able to spawn in it from the start
       },
       {
         "name": "variation2.nbt",
@@ -86,3 +87,6 @@ Place a structure block directly below the NW-corner on the build:
 - Enter structure size, for example "9 20 9"
 
 You can then press the right SAVE button in order to save it as a file on the disk, copy it and put it like the structure seen above.
+
+## Spawn NBT
+This is a 3x3-room empty space in the middle of the map, intended as the goal or where you leave your crystals. The middle on each edge requires a doorway.

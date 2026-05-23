@@ -29,14 +29,17 @@ public class StructureLoader {
 
         File[] maps = folder.listFiles(File::isDirectory);
         if (maps == null) return;
+
         for (File mapFile : maps) {
             File[] dataFile = mapFile.listFiles(f -> f.getName().equals("data.json"));
             if (dataFile == null || dataFile.length == 0) continue;
-            System.out.println(dataFile.length + " " + dataFile[0].getName());
 
             MazeMap map;
             JsonObject data;
             try {
+                File[] spawnFile = mapFile.listFiles(f -> f.getName().equals("spawn.nbt"));
+                if (spawnFile == null || spawnFile.length == 0) continue;
+
                 Reader reader = new FileReader(dataFile[0]);
                 data = new Gson().fromJson(reader, JsonObject.class);
 
@@ -45,7 +48,8 @@ public class StructureLoader {
                     data.get("creator").getAsString(),
                     data.get("room_size").getAsInt(),
                     data.get("map_size").getAsInt(),
-                    data.get("loop_chance").getAsFloat()
+                    data.get("loop_chance").getAsFloat(),
+                    manager.loadStructure(spawnFile[0])
                 );
 
                 JsonObject files = data.get("files").getAsJsonObject();
@@ -60,6 +64,7 @@ public class StructureLoader {
                     plugin.getLogger().severe("Failed loading sub-blocks!");
                     continue;
                 }
+
                 mazeMaps.add(map);
             } catch (Exception e) {
                 plugin.getLogger().severe("Error loading maze map!");
@@ -82,7 +87,7 @@ public class StructureLoader {
                 }
 
                 Structure structure = manager.loadStructure(file);
-                map.blocks.computeIfAbsent(type, _ -> new ArrayList<>()).add(new MazeBlock(structure, block.get("chance").getAsFloat(), block.get("spawnable").getAsBoolean()));
+                map.blocks.computeIfAbsent(type, _ -> new ArrayList<>()).add(new MazeBlock.MazeBlockType(structure, block.get("chance").getAsFloat(), block.get("spawnable").getAsBoolean()));
                 return true;
             }
         } catch (Exception e) {
