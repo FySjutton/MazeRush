@@ -82,7 +82,7 @@ public class StructureLoader {
                 }
 
                 Structure structure = manager.loadStructure(file);
-                map.blocks.computeIfAbsent(type, _ -> new ArrayList<>()).add(new MazeBlock(structure, block.get("chance").getAsFloat()));
+                map.blocks.computeIfAbsent(type, _ -> new ArrayList<>()).add(new MazeBlock(structure, block.get("chance").getAsFloat(), block.get("spawnable").getAsBoolean()));
                 return true;
             }
         } catch (Exception e) {

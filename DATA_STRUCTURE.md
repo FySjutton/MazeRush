@@ -36,35 +36,41 @@ The data structure of a MazeRush map is quite simple.
     "4_way": [    // a list of the different variations
       {
         "name": "variation1.nbt",   // the name of the variation
-        "chance": 0.7               // the chance of this variation of spawning
+        "chance": 0.7,              // the chance of this variation of spawning
+        "spawnable": true           // if players should be able to spawn in it from the start
       },
       {
         "name": "variation2.nbt",
-        "chance": 0.3
+        "chance": 0.3,
+        "spawnable": true
       }
     ],
     "3_way": [
       {
         "name": "variation1.nbt",
-        "chance": 1
+        "chance": 1,
+        "spawnable": true
       }
     ],
     "straight": [
       {
         "name": "variation1.nbt",
-        "chance": 1
+        "chance": 1,
+        "spawnable": true
       }
     ],
     "corner": [
       {
         "name": "variation1.nbt",
-        "chance": 1
+        "chance": 1,
+        "spawnable": true
       }
     ],
     "deadend": [
       {
         "name": "variation1.nbt",
-        "chance": 1
+        "chance": 1,
+        "spawnable": true
       }
     ]
   }

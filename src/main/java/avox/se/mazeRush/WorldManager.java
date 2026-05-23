@@ -2,6 +2,7 @@ package avox.se.mazeRush;
 
 import avox.se.mazeRush.generator.MazeGenerator;
 import avox.se.mazeRush.generator.MazePlacer;
+import avox.se.mazeRush.structure.MazeBlock;
 import org.bukkit.*;
 import org.bukkit.generator.ChunkGenerator;
 import org.jetbrains.annotations.NotNull;
@@ -31,12 +32,13 @@ public class WorldManager {
             .generator(new EmptyChunkGenerator())
             .environment(World.Environment.NORMAL)
             .createWorld();
+        if (world == null) return null;
 
         world.setAutoSave(false);
         world.setSpawnFlags(false, false);
 
         boolean[][][] maze = MazeGenerator.generate(12, 12, 0.12f, new Random());
-        new MazePlacer(mazeMaps.getFirst(), 100).place(world, maze);
+        MazeBlock[][] blocks = new MazePlacer(mazeMaps.getFirst(), 100).place(world, maze);
 
         return world;
     }

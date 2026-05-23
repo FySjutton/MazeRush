@@ -1,5 +1,6 @@
 package avox.se.mazeRush.generator;
 
+import avox.se.mazeRush.structure.MazeBlock;
 import avox.se.mazeRush.structure.MazeMap;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -19,10 +20,11 @@ public class MazePlacer {
         this.yLevel = yLevel;
     }
 
-    public void place(World world, boolean[][][] walls) {
+    public MazeBlock[][] place(World world, boolean[][][] walls) {
         int width = walls.length;
         int height = walls[0].length;
 
+        MazeBlock[][] blocks = new MazeBlock[width][height];
         for (int x = 0; x < width; x++) {
             for (int z = 0; z < height; z++) {
                 boolean n = walls[x][z][0];
@@ -31,12 +33,15 @@ public class MazePlacer {
                 boolean w = walls[x][z][3];
 
                 RoomType room = resolveRoom(n, e, s, w);
-                Structure structure = mazeMap.getBlock(room.type).structure();
+                MazeBlock block = mazeMap.getBlock(room.type);
+                blocks[x][z] = block;
+                Structure structure = block.structure();
 
                 Location loc = getLocation(world, x, z, room.rotation);
                 structure.place(loc, false, room.rotation, Mirror.NONE, 0, 1.0f, new Random());
             }
         }
+        return blocks;
     }
 
     private RoomType resolveRoom(boolean n, boolean e, boolean s, boolean w) {
