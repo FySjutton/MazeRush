@@ -1,8 +1,5 @@
 package avox.se.mazeRush;
 
-import avox.se.mazeRush.generator.MazeGenerator;
-import avox.se.mazeRush.generator.MazePlacer;
-import avox.se.mazeRush.structure.MazeBlock;
 import org.bukkit.*;
 import org.bukkit.generator.ChunkGenerator;
 import org.jetbrains.annotations.NotNull;
@@ -14,8 +11,6 @@ import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.Random;
 import java.util.UUID;
-
-import static avox.se.mazeRush.structure.StructureLoader.mazeMaps;
 
 public class WorldManager {
     public static class EmptyChunkGenerator extends ChunkGenerator {
@@ -36,9 +31,6 @@ public class WorldManager {
 
         world.setAutoSave(false);
         world.setSpawnFlags(false, false);
-
-        boolean[][][] maze = MazeGenerator.generate(12, 12, 0.12f, new Random());
-        MazeBlock[][] blocks = new MazePlacer(mazeMaps.getFirst(), 100).place(world, maze);
 
         return world;
     }

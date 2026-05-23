@@ -38,7 +38,7 @@ public class MazePlacer {
                 Structure structure = block.structure();
 
                 Location loc = getLocation(world, x, z, room.rotation);
-                structure.place(loc, false, room.rotation, Mirror.NONE, 0, 1.0f, new Random());
+                structure.place(loc, true, room.rotation, Mirror.NONE, 0, 1.0f, new Random());
             }
         }
         return blocks;
